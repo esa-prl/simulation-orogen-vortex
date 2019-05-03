@@ -1,0 +1,32 @@
+name "vortex"
+
+using_library "udp"
+
+import_types_from "vortexTypes.hpp"
+import_types_from "std"
+import_types_from "base"
+
+task_context "Task" do
+   
+    needs_configuration
+
+    property('num_joints', 'int')
+    property('num_motors', 'int')
+	property('PORTC', 'int')
+	property('PORTS', 'int')
+    property "addrS", "/std/string"
+    property "addrC", "/std/string"
+	property('joint_readings_names', '/std/vector<std/string>')
+	property('manipulator_num_joints', 'int')
+
+    input_port("joints_commands", "/base/commands/Joints")
+	input_port("manipulator_commands", "/std/vector<double>")
+
+    output_port("joints_readings", "/base/samples/Joints")
+    output_port("pose", "/base/samples/RigidBodyState")
+    output_port("goalWaypoint", "/base/Waypoint")
+	output_port("manipulator_readings", "/std/vector<double>")
+
+    periodic 0.01
+end
+
