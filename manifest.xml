@@ -1,5 +1,5 @@
 <package>
-  <description brief="">
+  <description brief="Interface between RoCK and Vortex Studio using UDP library">
   
   </description>
   <author>Pablo Romeo Manrique/pablorm@uma.es</author>
@@ -14,5 +14,6 @@
   <depend package="dummy-dependency-n-1" />
   <depend package="dummy-dependency-n" />
   -->
-  <depend package="simulation/udp" />
+  <depend package="drivers/udp" />
+  <depend package="base/orogen/types"/>
 </package>
