@@ -158,17 +158,17 @@ void Task::updateHook()
 				dataSend[i] = manipulator_commands[i-num_motors+1];
 			}	
 		}
-		else
+		/*else
 		{
-			for(int i = num_motors; i < num_motors+manipulator_num_joints; i++)
+			for(int i = num_motors-1; i < num_motors+manipulator_num_joints-1; i++)
 			{
-				dataSend[i] = manipulator_readings.at(i-num_motors);
+				dataSend[i] = manipulator_readings.at(i-num_motors+1);
 			}	
-		}
+		}*/
 		// SEND PACKET TO VORTEX STUDIO
 		n = udp->udpSend(sockC, dataSend, num_motors+manipulator_num_joints-1);
 	}
-	
+
 }
 
 void Task::errorHook()
