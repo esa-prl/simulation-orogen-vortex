@@ -31,10 +31,8 @@ namespace vortex{
 				int PORTS;
 				std::string addrS;
 				std::string addrC;
-				// std:vector<double> dataReceived;
-				// std:vector<double> dataSend;
-				double dataReceived[52];
-				double dataSend[22];
+				double *dataReceived;
+				double *dataSend;
 				std::vector<double> manipulator_commands;
 				std::vector<double> manipulator_readings;
 				base::samples::Joints joints_commands;

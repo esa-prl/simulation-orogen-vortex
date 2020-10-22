@@ -41,9 +41,17 @@ bool Task::configureHook()
 
 	for (int i = 0; i < num_joints; i++)
         joints_readings.names[i] = joint_readings_names[i];
-    
-	//double dataReceived[2*(num_joints-5)+nPose+nOrientation+nGoalWayPoint];
-	//double dataSend[num_motors];
+   
+    // Driving joints; steering joints; walking joints; arm joints 
+	dataSend = new double[num_motors+manipulator_num_joints];
+    for (int i = 0; i < num_motors+manipulator_num_joints; i++)
+        dataSend[i] = 0;
+
+    // rover joints position and speed; manipulator position;
+    // [x y z roll pitch yaw] rover pose (6); [x y yaw] goal pose (3)
+	dataReceived = new double[num_joints*2 + manipulator_num_joints + nPose + nOrientation + nGoalWayPoint];
+    for (int i = 0; i < num_joints*2 + manipulator_num_joints + nPose + nOrientation + nGoalWayPoint; i++)
+        dataReceived[i] = 0;
 
     /// ---Configure UDP connection--- ///
 
@@ -109,11 +117,8 @@ void Task::updateHook()
 	goalWaypoint.position[1] = dataReceived[num_joints*2+7];
 	goalWaypoint.heading = dataReceived[num_joints*2+8];
 
-	manipulator_readings.at(0) = dataReceived[num_joints*2+nPose+nOrientation+nGoalWayPoint];
-	manipulator_readings.at(1) = dataReceived[num_joints*2+nPose+nOrientation+nGoalWayPoint+1];
-	manipulator_readings.at(2) = dataReceived[num_joints*2+nPose+nOrientation+nGoalWayPoint+2];
-	manipulator_readings.at(3) = dataReceived[num_joints*2+nPose+nOrientation+nGoalWayPoint+3];
-	manipulator_readings.at(4) = dataReceived[num_joints*2+nPose+nOrientation+nGoalWayPoint+4];
+    for(int i = 0; i < manipulator_num_joints; i++)
+    	manipulator_readings.at(i) = dataReceived[num_joints*2+nPose+nOrientation+nGoalWayPoint+i];
 
 
 	
@@ -153,20 +158,20 @@ void Task::updateHook()
 		}
 		if(_manipulator_commands.read(manipulator_commands) == RTT::NewData)
 		{
-			for(int i = num_motors-1; i < num_motors+manipulator_num_joints; i++)
+			for(int i = num_motors; i < num_motors+manipulator_num_joints; i++)
 			{
-				dataSend[i] = manipulator_commands[i-num_motors+1];
+				dataSend[i] = manipulator_commands[i-num_motors];
 			}	
 		}
 		/*else
 		{
-			for(int i = num_motors-1; i < num_motors+manipulator_num_joints-1; i++)
+			for(int i = num_motors; i < num_motors+manipulator_num_joints-1; i++)
 			{
 				dataSend[i] = manipulator_readings.at(i-num_motors+1);
 			}	
 		}*/
 		// SEND PACKET TO VORTEX STUDIO
-		n = udp->udpSend(sockC, dataSend, num_motors+manipulator_num_joints-1);
+		n = udp->udpSend(sockC, dataSend, num_motors+manipulator_num_joints);
 	}
 
 }
