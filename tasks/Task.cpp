@@ -120,8 +120,6 @@ void Task::updateHook()
     for(int i = 0; i < manipulator_num_joints; i++)
     	manipulator_readings.at(i) = dataReceived[num_joints*2+nPose+nOrientation+nGoalWayPoint+i];
 
-
-	
 	// PUBLISH TO ROCK
 	_pose.write(pose);
 	_goalWaypoint.write(goalWaypoint);
@@ -156,23 +154,26 @@ void Task::updateHook()
 					dataSend[i] = joints_commands.elements[num_motors].speed;
 			}
 		}
-		if(_manipulator_commands.read(manipulator_commands) == RTT::NewData)
-		{
-			for(int i = num_motors; i < num_motors+manipulator_num_joints; i++)
-			{
-				dataSend[i] = manipulator_commands[i-num_motors];
-			}	
-		}
-		/*else
-		{
-			for(int i = num_motors; i < num_motors+manipulator_num_joints-1; i++)
-			{
-				dataSend[i] = manipulator_readings.at(i-num_motors+1);
-			}	
-		}*/
-		// SEND PACKET TO VORTEX STUDIO
-		n = udp->udpSend(sockC, dataSend, num_motors+manipulator_num_joints);
-	}
+    }
+
+
+    if(_manipulator_commands.read(manipulator_commands) == RTT::NewData)
+    {
+        for(int i = num_motors; i < num_motors+manipulator_num_joints; i++)
+        {
+            dataSend[i] = manipulator_commands[i-num_motors];
+        }	
+    }
+    /*else
+    {
+        for(int i = num_motors; i < num_motors+manipulator_num_joints-1; i++)
+        {
+            dataSend[i] = manipulator_readings.at(i-num_motors+1);
+        }	
+    }*/
+    // SEND PACKET TO VORTEX STUDIO
+    n = udp->udpSend(sockC, dataSend, num_motors+manipulator_num_joints);
+	
 
 }
 
