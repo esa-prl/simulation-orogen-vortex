@@ -96,11 +96,11 @@ void Task::updateHook()
 	}
 	    
     // LOCALIZATION
-
+    // Rover position
     pose.position.x() = dataReceived[num_joints*2];
     pose.position.y() = dataReceived[num_joints*2+1];
     pose.position.z() = dataReceived[num_joints*2+2];
-
+    // Rover orientation
 	double cy = cos(dataReceived[num_joints*2+5] * 0.5);
     double sy = sin(dataReceived[num_joints*2+5] * 0.5);
     double cp = cos(dataReceived[num_joints*2+4] * 0.5);
@@ -113,10 +113,29 @@ void Task::updateHook()
     pose.orientation.y() = sy * cp * sr + cy * sp * cr;
     pose.orientation.z() = sy * cp * cr - cy * sp * sr;
 
+    // Sample position (x, y) and orientation(gamma)
 	goalWaypoint.position[0] = dataReceived[num_joints*2+6];
 	goalWaypoint.position[1] = dataReceived[num_joints*2+7];
-	goalWaypoint.heading = dataReceived[num_joints*2+8];
+	goalWaypoint.heading = dataReceived[num_joints*2+11];
 
+
+    // Sample position (x, y,z) and orientation(alpha, beta, gama) for the kinova arm planning
+    //Defining a vector that will contain the sample position 
+    sample_position.resize(3);
+    
+    //Defining a vector that will contain the sample orientation 
+    sample_orientation.resize(3);
+	
+    //Storing sample position received form Vortex
+    sample_position[0] = dataReceived[num_joints*2+6];
+    sample_position[1] = dataReceived[num_joints*2+7];
+    sample_position[2] = dataReceived[num_joints*2+8];
+
+    //Storing sample orientation received form Vortex
+    sample_orientation[0] = dataReceived[num_joints*2+9];
+    sample_orientation[1] = dataReceived[num_joints*2+10];
+    sample_orientation[2] = dataReceived[num_joints*2+11];
+ 
     for(int i = 0; i < manipulator_num_joints; i++)
     	manipulator_readings.at(i) = dataReceived[num_joints*2+nPose+nOrientation+nGoalWayPoint+i];
 
@@ -125,6 +144,9 @@ void Task::updateHook()
 	_goalWaypoint.write(goalWaypoint);
 	_joints_readings.write(joints_readings);
 	_manipulator_readings.write(manipulator_readings);
+    //Sending sample position and orientation to kinova planning
+    _sample_position_port.write(sample_position);
+    _sample_orientation_port.write(sample_orientation);
 
 	/// ---Receive the data from RoCK and pack it for Vortex Studio--- ///
     

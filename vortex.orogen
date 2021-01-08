@@ -26,6 +26,8 @@ task_context "Task" do
     output_port("pose", "/base/samples/RigidBodyState")
     output_port("goalWaypoint", "/base/Waypoint")
 	output_port("manipulator_readings", "/std/vector<double>")
+	output_port("sample_position_port", "/std/vector<double>")
+	output_port("sample_orientation_port", "/std/vector<double>")
 
     periodic 0.01
 end

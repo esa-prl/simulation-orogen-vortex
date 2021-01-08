@@ -25,7 +25,7 @@ namespace vortex{
 				int manipulator_num_joints;
 				int nPose = 3;
 				int nOrientation = 3;
-				int nGoalWayPoint = 3;
+				int nGoalWayPoint = 6;
 				int n;
 				int PORTC;
 				int PORTS;
@@ -33,7 +33,9 @@ namespace vortex{
 				std::string addrC;
 				double *dataReceived;
 				double *dataSend;
-				std::vector<double> manipulator_commands;
+                std::vector<double> sample_orientation;
+                std::vector<double> sample_position;
+            	std::vector<double> manipulator_commands;
 				std::vector<double> manipulator_readings;
 				base::samples::Joints joints_commands;
 				base::samples::Joints joints_readings;
