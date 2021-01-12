@@ -15,4 +15,5 @@
   <depend package="dummy-dependency-n" />
   -->
   <depend package="base/orogen/types"/>
+  <depend package="drivers/udp"/>
 </package>
